@@ -368,8 +368,8 @@ export class ModalFormData<T extends any[] = []> {
         maximumValue: number,
         valueStep: number,
         defaultValue?: number,
-    ): ModalFormData;
-    submitButton(submitButtonText: minecraftserver.RawMessage | string): ModalFormData<[...T, number]>;
+    ): ModalFormData<[...T, number]>;
+    submitButton(submitButtonText: minecraftserver.RawMessage | string): ModalFormData<T>;
     /**
      * @remarks
      * Adds a textbox to the form.
