@@ -13,3 +13,7 @@ https://discord.com/channels/@me/339352508705275904
 ### You may also want to check out the Github or npm Page
 - https://www.npmjs.com/package/typesafe-mc
 - https://github.com/iEnis/typesafe-mc
+
+## How to use
+
+Run `npx typesafe-mc` in the root of your project

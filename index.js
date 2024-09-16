@@ -2,15 +2,22 @@
 import { existsSync, readFileSync, writeFileSync } from "fs";
 import inquirer from "inquirer";
 import chalk from "chalk";
+console.clear();
+
+if (!existsSync("./node_modules/@minecraft")) {
+    console.warn(chalk.red([
+        "Please run this in the Root of your project and",
+        "install the node modules before trying to patch",
+    ].join("\n")));
+    process.exit(1);
+}
 
 const infoText = [
     '\/\/? This file has been patched "https://www.npmjs.com/package/typesafe-mc"',
     `\/\/? version: "${JSON.parse(readFileSync(`${import.meta.dirname}/package.json`).toString()).version}"`,
 ].join("\n");
 
-console.clear();
-
-console.log(chalk.yellow([
+console.info(chalk.yellow([
     "Currently only the '@minecraft/server-ui' module is supported",
     "You can Contact me through discord to recommend some changes or additions",
     "My username: 'iEnis'",
@@ -33,7 +40,7 @@ const modules = toPatch.modules.map((el) => el.replace("\u001b[33m", "").replace
 console.clear();
 
 if (modules.length === 0) {
-    console.log(chalk.red("No Modules Selected"));
+    console.warn(chalk.red("No Modules Selected"));
     process.exit(2);
 }
 
@@ -43,21 +50,21 @@ const patches = {
 }
 
 for (const module of modules) {
-    console.log(chalk.yellow(`Checking '${module}'`));
+    console.info(chalk.yellow(`Checking '${module}'`));
 
     if (!existsSync(`./node_modules/${module}`)) {
-        console.log(chalk.red(`Failed to patch '${module}'`));
+        console.warn(chalk.red(`Failed to patch '${module}'`));
         patches.fail.push(module);
         continue;
     }
     console.log(chalk.green(`Found '${module}'`));
 
-    console.log(chalk.yellow(`Reading online '${module}'`));
+    console.info(chalk.yellow(`Reading online '${module}'`));
     const type = readFileSync(`${import.meta.dirname}/types/${module.replace("@minecraft/", "")}.d.ts`).toString()
         .replace("\/\/! {REPLACE_ME}", infoText);
     console.log(chalk.green(`Read '${module}'`));
 
-    console.log(chalk.yellow(`Writing '${module}'`));
+    console.info(chalk.yellow(`Writing '${module}'`));
     writeFileSync(`./node_modules/${module}/index.d.ts`, type);
     console.log(chalk.green(`Wrote '${module}'`));
 
@@ -67,9 +74,9 @@ for (const module of modules) {
 console.clear();
 
 for (const success of patches.success) { console.log(chalk.green(`Successfully patched '${success}'`)) }
-for (const fail of patches.fail) { console.log(chalk.red(`Failed to patch '${fail}'`)) }
+for (const fail of patches.fail) { console.warn(chalk.red(`Failed to patch '${fail}'`)) }
 
 if (patches.fail.length > 0)
-    console.log(chalk.yellow(`Please install all packages you want to pach before trying to patch them`))
+    console.info(chalk.yellow(`\nPlease install all packages you want to pach before trying to patch them`))
 
 console.log(chalk.green("Done!"));
