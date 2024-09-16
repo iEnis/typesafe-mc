@@ -1,0 +1,27 @@
+{
+    "name": "typesafe-mc",
+    "type": "module",
+    "description": "Give better Types to your Minecraft Addon",
+    "version": "1.0.0",
+    "author": "iEnis",
+    "bin": {
+        "typesafe-mc": "index.js"
+    },
+    "keywords": [
+        "Minecraft-Bedrock",
+        "Bedrock",
+        "Minecraft",
+        "Typescript",
+        "Types",
+        "Cli",
+        "MCBE",
+        "Addon"
+    ],
+    "dependencies": {
+        "@minecraft/common": "^1.2.0",
+        "@minecraft/server": "^1.13.0",
+        "@minecraft/server-ui": "^1.2.0",
+        "chalk": "^5.3.0",
+        "inquirer": "^11.0.1"
+    }
+}
