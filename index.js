@@ -10,7 +10,8 @@ console.log(chalk.yellow([
     "Currently only the '@minecraft/server-ui' module is supported",
     "You can Contact me through discord to recommend some changes or additions",
     "My username: 'iEnis'",
-    "https://www.npmjs.com/package/typesafe-mc",
+    "You may want to check out the npm package: https://www.npmjs.com/package/typesafe-mc",
+    "I would also appreciate if you star my Github Repo: https://github.com/iEnis/typesafe-mc"
 ].concat("").join("\n")));
 
 const toPatch = await inquirer.prompt([{
