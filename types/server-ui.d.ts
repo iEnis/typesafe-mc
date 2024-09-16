@@ -1,4 +1,5 @@
 //! This file has been patched "https://www.npmjs.com/package/typesafe-mc"
+//? version: "{PATCH_VERSION}"
 
 // Type definitions for Minecraft Bedrock Edition script APIs
 // Project: https://docs.microsoft.com/minecraft/creator/
