@@ -7,6 +7,9 @@
     "bin": {
         "typesafe-mc": "index.js"
     },
+    "scripts": {
+        "publish": "npm publish --access public"
+    },
     "keywords": [
         "Minecraft-Bedrock",
         "Bedrock",
