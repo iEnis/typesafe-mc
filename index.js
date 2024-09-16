@@ -1,8 +1,12 @@
 #!/usr/bin/env node
 import { existsSync, readFileSync, writeFileSync } from "fs";
-const version = JSON.parse(readFileSync(`${import.meta.dirname}/package.json`).toString()).version;
 import inquirer from "inquirer";
 import chalk from "chalk";
+
+const infoText = [
+    '\/\/? This file has been patched "https://www.npmjs.com/package/typesafe-mc"',
+    `\/\/? version: "${JSON.parse(readFileSync(`${import.meta.dirname}/package.json`).toString()).version}"`,
+].join("\n");
 
 console.clear();
 
@@ -49,7 +53,8 @@ for (const module of modules) {
     console.log(chalk.green(`Found '${module}'`));
 
     console.log(chalk.yellow(`Reading online '${module}'`));
-    const type = readFileSync(`${import.meta.dirname}/types/${module.replace("@minecraft/", "")}.d.ts`).toString().replace("{PATCH_VERSION}", version);
+    const type = readFileSync(`${import.meta.dirname}/types/${module.replace("@minecraft/", "")}.d.ts`).toString()
+        .replace("\/\/! {REPLACE_ME}", infoText);
     console.log(chalk.green(`Read '${module}'`));
 
     console.log(chalk.yellow(`Writing '${module}'`));
