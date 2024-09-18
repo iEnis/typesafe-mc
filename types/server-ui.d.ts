@@ -440,8 +440,21 @@ export class ModalFormResponse<T extends any[]> extends FormResponse {
     readonly formValues?: T;
 }
 
+export class UIManager {
+    private constructor();
+    /**
+     * @remarks
+     * This function can't be called in read-only mode.
+     *
+     * @throws This function can throw errors.
+     */
+    closeAllForms(player: minecraftserver.Player): void;
+}
+
 // @ts-ignore Class inheritance allowed for native defined classes
 export class FormRejectError extends Error {
     private constructor();
     reason: FormRejectReason;
 }
+
+export const uiManager: UIManager;
