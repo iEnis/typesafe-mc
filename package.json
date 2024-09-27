@@ -2,7 +2,7 @@
     "name": "typesafe-mc",
     "type": "module",
     "description": "Give better Types to your Minecraft Addon",
-    "version": "1.2.5",
+    "version": "1.2.6",
     "author": "iEnis",
     "bin": {
         "typesafe-mc": "index.js"
@@ -18,10 +18,12 @@
         "Addon"
     ],
     "dependencies": {
-        "@minecraft/common": "^1.2.0",
-        "@minecraft/server": "^1.14.0",
-        "@minecraft/server-ui": "^1.3.0",
         "chalk": "^5.3.0",
         "inquirer": "^11.0.1"
+    },
+    "devDependencies": {
+        "@minecraft/common": "^1.2.0",
+        "@minecraft/server": "^1.14.0",
+        "@minecraft/server-ui": "^1.3.0"
     }
 }
