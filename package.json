@@ -2,7 +2,7 @@
     "name": "typesafe-mc",
     "type": "module",
     "description": "Give better Types to your Minecraft Addon",
-    "version": "1.2.7",
+    "version": "1.2.8",
     "author": "iEnis",
     "bin": {
         "typesafe-mc": "index.js"

@@ -341,7 +341,7 @@ export class ModalFormData<T extends any[] = []> {
      */
     dropdown(
         label: minecraftserver.RawMessage | string,
-        options: (minecraftserver.RawMessage | string)[],
+        options: readonly (minecraftserver.RawMessage | string)[],
         defaultValueIndex?: number,
     ): ModalFormData<[...T, number]>;
     /**
