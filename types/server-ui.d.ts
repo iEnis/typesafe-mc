@@ -379,7 +379,7 @@ export class ModalFormData<T extends any[] = []> {
         label: minecraftserver.RawMessage | string,
         placeholderText: minecraftserver.RawMessage | string,
         defaultValue?: minecraftserver.RawMessage | string,
-    ): ModalFormData<[...T, minecraftserver.RawMessage | string]>;
+    ): ModalFormData<[...T, string]>;
     /**
      * @remarks
      * This builder method sets the title for the modal dialog.
