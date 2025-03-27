@@ -9,6 +9,7 @@
    Copyright (c) Microsoft Corporation.
    ***************************************************************************** */
 /**
+ * @beta
  * @packageDocumentation
  * The `@minecraft/server-ui` module contains types for
  * expressing simple dialog-based user experiences.
@@ -22,29 +23,12 @@
  *   * {@link ModalFormData} allow for a more flexible
  * "questionnaire-style" list of controls that can be used to
  * take input.
- * @example createActionForm.js
- * ```typescript
- * const form = new ActionFormData()
- *   .title("Months")
- *   .body("Choose your favorite month!")
- *   .button("January")
- *   .button("February")
- *   .button("March")
- *   .button("April")
- *   .button("May");
- *
- * form.show(players[0]).then((response) => {
- *   if (response.selection === 3) {
- *     dimension.runCommand("say I like April too!");
- *   }
- * });
- * ```
  *
  * Manifest Details
  * ```json
  * {
  *   "module_name": "@minecraft/server-ui",
- *   "version": "1.2.0"
+ *   "version": "2.0.0-beta"
  * }
  * ```
  *
@@ -65,28 +49,60 @@ export enum FormRejectReason {
 /**
  * Builds a simple player form with buttons that let the player
  * take action.
- * @example actionFormAskFavoriteMonth.ts
+ * @example showActionForm.ts
  * ```typescript
- * import { Player } from '@minecraft/server';
- * import { ActionFormData, ActionFormResponse } from '@minecraft/server-ui';
+ * import { world, DimensionLocation } from "@minecraft/server";
+ * import { ActionFormData, ActionFormResponse } from "@minecraft/server-ui";
  *
- * function askFavoriteMonth(player: Player) {
+ * function showActionForm(log: (message: string, status?: number) => void, targetLocation: DimensionLocation) {
+ *   const playerList = world.getPlayers();
+ *
+ *   if (playerList.length >= 1) {
  *     const form = new ActionFormData()
- *         .title('Months')
- *         .body('Choose your favorite month!')
- *         .button('January')
- *         .button('February')
- *         .button('March')
- *         .button('April')
- *         .button('May');
+ *       .title("Test Title")
+ *       .body("Body text here!")
+ *       .button("btn 1")
+ *       .button("btn 2")
+ *       .button("btn 3")
+ *       .button("btn 4")
+ *       .button("btn 5");
  *
- *     form.show(player).then((response: ActionFormResponse) => {
- *         if (response.selection === 3) {
- *             player.sendMessage('I like April too!');
- *         } else {
- *             player.sendMessage('Nah, April is the best.');
- *         }
+ *     form.show(playerList[0]).then((result: ActionFormResponse) => {
+ *       if (result.canceled) {
+ *         log("Player exited out of the dialog. Note that if the chat window is up, dialogs are automatically canceled.");
+ *         return -1;
+ *       } else {
+ *         log("Your result was: " + result.selection);
+ *       }
  *     });
+ *   }
+ * }
+ * ```
+ * @example showFavoriteMonth.ts
+ * ```typescript
+ * import { world, DimensionLocation } from "@minecraft/server";
+ * import { ActionFormData, ActionFormResponse } from "@minecraft/server-ui";
+ *
+ * function showFavoriteMonth(log: (message: string, status?: number) => void, targetLocation: DimensionLocation) {
+ *   const players = world.getPlayers();
+ *
+ *   if (players.length >= 1) {
+ *     const form = new ActionFormData()
+ *       .title("Months")
+ *       .body("Choose your favorite month!")
+ *       .button("January")
+ *       .button("February")
+ *       .button("March")
+ *       .button("April")
+ *       .button("May");
+ *
+ *     form.show(players[0]).then((response: ActionFormResponse) => {
+ *       if (response.selection === 3) {
+ *         log("I like April too!");
+ *         return -1;
+ *       }
+ *     });
+ *   }
  * }
  * ```
  */
@@ -104,6 +120,31 @@ export class ActionFormData {
      *
      */
     button(text: minecraftserver.RawMessage | string, iconPath?: string): ActionFormData;
+    /**
+     * @beta
+     * @remarks
+     * Adds a section divider to the form.
+     *
+     */
+    divider(): ActionFormData;
+    /**
+     * @beta
+     * @remarks
+     * Adds a header to the form.
+     *
+     * @param text
+     * Text to display.
+     */
+    header(text: minecraftserver.RawMessage | string): ActionFormData;
+    /**
+     * @beta
+     * @remarks
+     * Adds a label to the form.
+     *
+     * @param text
+     * Text to display.
+     */
+    label(text: minecraftserver.RawMessage | string): ActionFormData;
     /**
      * @remarks
      * Creates and shows this modal popup form. Returns
@@ -128,28 +169,60 @@ export class ActionFormData {
 /**
  * Returns data about the player results from a modal action
  * form.
- * @example actionFormAskFavoriteMonth.ts
+ * @example showActionForm.ts
  * ```typescript
- * import { Player } from '@minecraft/server';
- * import { ActionFormData, ActionFormResponse } from '@minecraft/server-ui';
+ * import { world, DimensionLocation } from "@minecraft/server";
+ * import { ActionFormData, ActionFormResponse } from "@minecraft/server-ui";
  *
- * function askFavoriteMonth(player: Player) {
+ * function showActionForm(log: (message: string, status?: number) => void, targetLocation: DimensionLocation) {
+ *   const playerList = world.getPlayers();
+ *
+ *   if (playerList.length >= 1) {
  *     const form = new ActionFormData()
- *         .title('Months')
- *         .body('Choose your favorite month!')
- *         .button('January')
- *         .button('February')
- *         .button('March')
- *         .button('April')
- *         .button('May');
+ *       .title("Test Title")
+ *       .body("Body text here!")
+ *       .button("btn 1")
+ *       .button("btn 2")
+ *       .button("btn 3")
+ *       .button("btn 4")
+ *       .button("btn 5");
  *
- *     form.show(player).then((response: ActionFormResponse) => {
- *         if (response.selection === 3) {
- *             player.sendMessage('I like April too!');
- *         } else {
- *             player.sendMessage('Nah, April is the best.');
- *         }
+ *     form.show(playerList[0]).then((result: ActionFormResponse) => {
+ *       if (result.canceled) {
+ *         log("Player exited out of the dialog. Note that if the chat window is up, dialogs are automatically canceled.");
+ *         return -1;
+ *       } else {
+ *         log("Your result was: " + result.selection);
+ *       }
  *     });
+ *   }
+ * }
+ * ```
+ * @example showFavoriteMonth.ts
+ * ```typescript
+ * import { world, DimensionLocation } from "@minecraft/server";
+ * import { ActionFormData, ActionFormResponse } from "@minecraft/server-ui";
+ *
+ * function showFavoriteMonth(log: (message: string, status?: number) => void, targetLocation: DimensionLocation) {
+ *   const players = world.getPlayers();
+ *
+ *   if (players.length >= 1) {
+ *     const form = new ActionFormData()
+ *       .title("Months")
+ *       .body("Choose your favorite month!")
+ *       .button("January")
+ *       .button("February")
+ *       .button("March")
+ *       .button("April")
+ *       .button("May");
+ *
+ *     form.show(players[0]).then((response: ActionFormResponse) => {
+ *       if (response.selection === 3) {
+ *         log("I like April too!");
+ *         return -1;
+ *       }
+ *     });
+ *   }
  * }
  * ```
  */
@@ -186,31 +259,70 @@ export class FormResponse {
 
 /**
  * Builds a simple two-button modal dialog.
- * @example messageFormSimple.ts
+ * @example showBasicMessageForm.ts
  * ```typescript
- * import { Player } from '@minecraft/server';
- * import { MessageFormResponse, MessageFormData } from '@minecraft/server-ui';
+ * import { world, DimensionLocation } from "@minecraft/server";
+ * import { MessageFormResponse, MessageFormData } from "@minecraft/server-ui";
  *
- * function showMessage(player: Player) {
- *     const messageForm = new MessageFormData()
- *         .title({ translate: 'permissions.removeplayer' }) // "Remove player"
- *         .body({ translate: 'accessibility.list.or.two', with: ['Player 1', 'Player 2'] }) // "Player 1 or Player 2"
- *         .button1('Player 1')
- *         .button2('Player 2');
+ * function showBasicMessageForm(
+ *   log: (message: string, status?: number) => void,
+ *   targetLocation: DimensionLocation
+ * ) {
+ *   const players = world.getPlayers();
  *
- *     messageForm
- *         .show(player)
- *         .then((formData: MessageFormResponse) => {
- *             // player canceled the form, or another dialog was up and open.
- *             if (formData.canceled || formData.selection === undefined) {
- *                 return;
- *             }
+ *   const messageForm = new MessageFormData()
+ *     .title("Message Form Example")
+ *     .body("This shows a simple example using §o§7MessageFormData§r.")
+ *     .button1("Button 1")
+ *     .button2("Button 2");
  *
- *             player.sendMessage(`You selected ${formData.selection === 0 ? 'Player 1' : 'Player 2'}`);
- *         })
- *         .catch((error: Error) => {
- *             player.sendMessage('Failed to show form: ' + error);
- *         });
+ *   messageForm
+ *     .show(players[0])
+ *     .then((formData: MessageFormResponse) => {
+ *       // player canceled the form, or another dialog was up and open.
+ *       if (formData.canceled || formData.selection === undefined) {
+ *         return;
+ *       }
+ *
+ *       log(`You selected ${formData.selection === 0 ? "Button 1" : "Button 2"}`);
+ *     })
+ *     .catch((error: Error) => {
+ *       log("Failed to show form: " + error);
+ *       return -1;
+ *     });
+ * }
+ * ```
+ * @example showTranslatedMessageForm.ts
+ * ```typescript
+ * import { world, DimensionLocation } from "@minecraft/server";
+ * import { MessageFormResponse, MessageFormData } from "@minecraft/server-ui";
+ *
+ * function showTranslatedMessageForm(
+ *   log: (message: string, status?: number) => void,
+ *   targetLocation: DimensionLocation
+ * ) {
+ *   const players = world.getPlayers();
+ *
+ *   const messageForm = new MessageFormData()
+ *     .title({ translate: "permissions.removeplayer" })
+ *     .body({ translate: "accessibility.list.or.two", with: ["Player 1", "Player 2"] })
+ *     .button1("Player 1")
+ *     .button2("Player 2");
+ *
+ *   messageForm
+ *     .show(players[0])
+ *     .then((formData: MessageFormResponse) => {
+ *       // player canceled the form, or another dialog was up and open.
+ *       if (formData.canceled || formData.selection === undefined) {
+ *         return;
+ *       }
+ *
+ *       log(`You selected ${formData.selection === 0 ? "Player 1" : "Player 2"}`);
+ *     })
+ *     .catch((error: Error) => {
+ *       log("Failed to show form: " + error);
+ *       return -1;
+ *     });
  * }
  * ```
  */
@@ -246,6 +358,10 @@ export class MessageFormData {
      * @param player
      * Player to show this dialog to.
      * @throws This function can throw errors.
+     *
+     * {@link minecraftcommon.EngineError}
+     *
+     * {@link minecraftserver.InvalidEntityError}
      */
     show(player: minecraftserver.Player): Promise<MessageFormResponse>;
     /**
@@ -259,31 +375,70 @@ export class MessageFormData {
 /**
  * Returns data about the player results from a modal message
  * form.
- * @example messageFormSimple.ts
+ * @example showBasicMessageForm.ts
  * ```typescript
- * import { Player } from '@minecraft/server';
- * import { MessageFormResponse, MessageFormData } from '@minecraft/server-ui';
+ * import { world, DimensionLocation } from "@minecraft/server";
+ * import { MessageFormResponse, MessageFormData } from "@minecraft/server-ui";
  *
- * function showMessage(player: Player) {
- *     const messageForm = new MessageFormData()
- *         .title({ translate: 'permissions.removeplayer' }) // "Remove player"
- *         .body({ translate: 'accessibility.list.or.two', with: ['Player 1', 'Player 2'] }) // "Player 1 or Player 2"
- *         .button1('Player 1')
- *         .button2('Player 2');
+ * function showBasicMessageForm(
+ *   log: (message: string, status?: number) => void,
+ *   targetLocation: DimensionLocation
+ * ) {
+ *   const players = world.getPlayers();
  *
- *     messageForm
- *         .show(player)
- *         .then((formData: MessageFormResponse) => {
- *             // player canceled the form, or another dialog was up and open.
- *             if (formData.canceled || formData.selection === undefined) {
- *                 return;
- *             }
+ *   const messageForm = new MessageFormData()
+ *     .title("Message Form Example")
+ *     .body("This shows a simple example using §o§7MessageFormData§r.")
+ *     .button1("Button 1")
+ *     .button2("Button 2");
  *
- *             player.sendMessage(`You selected ${formData.selection === 0 ? 'Player 1' : 'Player 2'}`);
- *         })
- *         .catch((error: Error) => {
- *             player.sendMessage('Failed to show form: ' + error);
- *         });
+ *   messageForm
+ *     .show(players[0])
+ *     .then((formData: MessageFormResponse) => {
+ *       // player canceled the form, or another dialog was up and open.
+ *       if (formData.canceled || formData.selection === undefined) {
+ *         return;
+ *       }
+ *
+ *       log(`You selected ${formData.selection === 0 ? "Button 1" : "Button 2"}`);
+ *     })
+ *     .catch((error: Error) => {
+ *       log("Failed to show form: " + error);
+ *       return -1;
+ *     });
+ * }
+ * ```
+ * @example showTranslatedMessageForm.ts
+ * ```typescript
+ * import { world, DimensionLocation } from "@minecraft/server";
+ * import { MessageFormResponse, MessageFormData } from "@minecraft/server-ui";
+ *
+ * function showTranslatedMessageForm(
+ *   log: (message: string, status?: number) => void,
+ *   targetLocation: DimensionLocation
+ * ) {
+ *   const players = world.getPlayers();
+ *
+ *   const messageForm = new MessageFormData()
+ *     .title({ translate: "permissions.removeplayer" })
+ *     .body({ translate: "accessibility.list.or.two", with: ["Player 1", "Player 2"] })
+ *     .button1("Player 1")
+ *     .button2("Player 2");
+ *
+ *   messageForm
+ *     .show(players[0])
+ *     .then((formData: MessageFormResponse) => {
+ *       // player canceled the form, or another dialog was up and open.
+ *       if (formData.canceled || formData.selection === undefined) {
+ *         return;
+ *       }
+ *
+ *       log(`You selected ${formData.selection === 0 ? "Player 1" : "Player 2"}`);
+ *     })
+ *     .catch((error: Error) => {
+ *       log("Failed to show form: " + error);
+ *       return -1;
+ *     });
  * }
  * ```
  */
@@ -301,39 +456,48 @@ export class MessageFormResponse extends FormResponse {
 /**
  * Used to create a fully customizable pop-up form for a
  * player.
- * @example modalFormSimple.ts
+ * @example showBasicModalForm.ts
  * ```typescript
- * import { Player } from '@minecraft/server';
- * import { ModalFormData } from '@minecraft/server-ui';
+ * import { world, DimensionLocation } from "@minecraft/server";
+ * import { ModalFormData } from "@minecraft/server-ui";
  *
- * function showExampleModal(player: Player) {
- *     const modalForm = new ModalFormData().title('Example Modal Controls for §o§7ModalFormData§r');
+ * function showBasicModalForm(log: (message: string, status?: number) => void, targetLocation: DimensionLocation) {
+ *   const players = world.getPlayers();
  *
- *     modalForm.toggle('Toggle w/o default');
- *     modalForm.toggle('Toggle w/ default', true);
+ *   const modalForm = new ModalFormData().title("Example Modal Controls for §o§7ModalFormData§r");
  *
- *     modalForm.slider('Slider w/o default', 0, 50, 5);
- *     modalForm.slider('Slider w/ default', 0, 50, 5, 30);
+ *   modalForm.toggle("Toggle w/o default");
+ *   modalForm.toggle("Toggle w/ default", true);
  *
- *     modalForm.dropdown('Dropdown w/o default', ['option 1', 'option 2', 'option 3']);
- *     modalForm.dropdown('Dropdown w/ default', ['option 1', 'option 2', 'option 3'], 2);
+ *   modalForm.slider("Slider w/o default", 0, 50, 5);
+ *   modalForm.slider("Slider w/ default", 0, 50, 5, 30);
  *
- *     modalForm.textField('Input w/o default', 'type text here');
- *     modalForm.textField('Input w/ default', 'type text here', 'this is default');
+ *   modalForm.dropdown("Dropdown w/o default", ["option 1", "option 2", "option 3"]);
+ *   modalForm.dropdown("Dropdown w/ default", ["option 1", "option 2", "option 3"], 2);
  *
- *     modalForm
- *         .show(player)
- *         .then(formData => {
- *             player.sendMessage(`Modal form results: ${JSON.stringify(formData.formValues, undefined, 2)}`);
- *         })
- *         .catch((error: Error) => {
- *             player.sendMessage('Failed to show form: ' + error);
- *             return -1;
- *         });
+ *   modalForm.textField("Input w/o default", "type text here");
+ *   modalForm.textField("Input w/ default", "type text here", "this is default");
+ *
+ *   modalForm
+ *     .show(players[0])
+ *     .then((formData) => {
+ *       players[0].sendMessage(`Modal form results: ${JSON.stringify(formData.formValues, undefined, 2)}`);
+ *     })
+ *     .catch((error: Error) => {
+ *       log("Failed to show form: " + error);
+ *       return -1;
+ *     });
  * }
  * ```
  */
 export class ModalFormData<T extends any[] = []> {
+    /**
+     * @beta
+     * @remarks
+     * Adds a section divider to the form.
+     *
+     */
+    divider(): ModalFormData<T>;
     /**
      * @remarks
      * Adds a dropdown with choices to the form.
@@ -341,9 +505,27 @@ export class ModalFormData<T extends any[] = []> {
      */
     dropdown(
         label: minecraftserver.RawMessage | string,
-        options: readonly (minecraftserver.RawMessage | string)[],
+        options: (minecraftserver.RawMessage | string)[],
         defaultValueIndex?: number,
     ): ModalFormData<[...T, number]>;
+    /**
+     * @beta
+     * @remarks
+     * Adds a header to the form.
+     *
+     * @param text
+     * Text to display.
+     */
+    header(text: minecraftserver.RawMessage | string): ModalFormData<T>;
+    /**
+     * @beta
+     * @remarks
+     * Adds a label to the form.
+     *
+     * @param text
+     * Text to display.
+     */
+    label(text: minecraftserver.RawMessage | string): ModalFormData<T>;
     /**
      * @remarks
      * Creates and shows this modal popup form. Returns
@@ -396,35 +578,37 @@ export class ModalFormData<T extends any[] = []> {
 
 /**
  * Returns data about player responses to a modal form.
- * @example modalFormSimple.ts
+ * @example showBasicModalForm.ts
  * ```typescript
- * import { Player } from '@minecraft/server';
- * import { ModalFormData } from '@minecraft/server-ui';
+ * import { world, DimensionLocation } from "@minecraft/server";
+ * import { ModalFormData } from "@minecraft/server-ui";
  *
- * function showExampleModal(player: Player) {
- *     const modalForm = new ModalFormData().title('Example Modal Controls for §o§7ModalFormData§r');
+ * function showBasicModalForm(log: (message: string, status?: number) => void, targetLocation: DimensionLocation) {
+ *   const players = world.getPlayers();
  *
- *     modalForm.toggle('Toggle w/o default');
- *     modalForm.toggle('Toggle w/ default', true);
+ *   const modalForm = new ModalFormData().title("Example Modal Controls for §o§7ModalFormData§r");
  *
- *     modalForm.slider('Slider w/o default', 0, 50, 5);
- *     modalForm.slider('Slider w/ default', 0, 50, 5, 30);
+ *   modalForm.toggle("Toggle w/o default");
+ *   modalForm.toggle("Toggle w/ default", true);
  *
- *     modalForm.dropdown('Dropdown w/o default', ['option 1', 'option 2', 'option 3']);
- *     modalForm.dropdown('Dropdown w/ default', ['option 1', 'option 2', 'option 3'], 2);
+ *   modalForm.slider("Slider w/o default", 0, 50, 5);
+ *   modalForm.slider("Slider w/ default", 0, 50, 5, 30);
  *
- *     modalForm.textField('Input w/o default', 'type text here');
- *     modalForm.textField('Input w/ default', 'type text here', 'this is default');
+ *   modalForm.dropdown("Dropdown w/o default", ["option 1", "option 2", "option 3"]);
+ *   modalForm.dropdown("Dropdown w/ default", ["option 1", "option 2", "option 3"], 2);
  *
- *     modalForm
- *         .show(player)
- *         .then(formData => {
- *             player.sendMessage(`Modal form results: ${JSON.stringify(formData.formValues, undefined, 2)}`);
- *         })
- *         .catch((error: Error) => {
- *             player.sendMessage('Failed to show form: ' + error);
- *             return -1;
- *         });
+ *   modalForm.textField("Input w/o default", "type text here");
+ *   modalForm.textField("Input w/ default", "type text here", "this is default");
+ *
+ *   modalForm
+ *     .show(players[0])
+ *     .then((formData) => {
+ *       players[0].sendMessage(`Modal form results: ${JSON.stringify(formData.formValues, undefined, 2)}`);
+ *     })
+ *     .catch((error: Error) => {
+ *       log("Failed to show form: " + error);
+ *       return -1;
+ *     });
  * }
  * ```
  */
@@ -454,6 +638,11 @@ export class UIManager {
 // @ts-ignore Class inheritance allowed for native defined classes
 export class FormRejectError extends Error {
     private constructor();
+    /**
+     * @remarks
+     * This property can be read in early-execution mode.
+     *
+     */
     reason: FormRejectReason;
 }
 

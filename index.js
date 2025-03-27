@@ -18,6 +18,7 @@ const infoText = [
 ].join("\n");
 
 console.info(chalk.yellow([
+    "We only support the latest beta (not preview) api of each module",
     "Currently only the '@minecraft/server-ui' module is supported",
     "You can Contact me through discord to recommend some changes or additions",
     "My username: 'iEnis'",
