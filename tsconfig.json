@@ -6,6 +6,7 @@
         "strict": true,
         "skipLibCheck": true,
         "allowJs": false,
-        "rootDir": ".",
+        "rootDir": "./src",
+        "outDir": "./scripts"
     }
 }

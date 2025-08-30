@@ -6,8 +6,8 @@
     "author": "iEnis",
     "bin": "scripts/index.js",
     "scripts": {
-        "build": "node build/build.js",
-        "watch": "node build/watch.js"
+        "build": "tsc --project tsconfig.json",
+        "watch": "tsc --project tsconfig.json --watch"
     },
     "files": [
         "scripts",
