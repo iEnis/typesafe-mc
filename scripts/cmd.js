@@ -17,9 +17,7 @@ export const patch = (module, targetPath = paths.exec("node_modules/@minecraft/s
             .toString()
             .replace(`\/\/! {REPLACE_ME}`, infoText));
     }
-    catch (e) {
-        console.log(e);
-    }
+    catch (e) { }
 };
 const tsmc = (targetPath) => {
     patch("@minecraft/server", targetPath);
