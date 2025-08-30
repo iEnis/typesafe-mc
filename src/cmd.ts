@@ -39,9 +39,7 @@ export const patch = (
                 .toString()
                 .replace(`\/\/! {REPLACE_ME}`, infoText),
         );
-    } catch (e) {
-        console.log(e);
-    }
+    } catch (e) {}
 };
 
 const tsmc = (targetPath?: string) => {
