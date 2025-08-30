@@ -28,7 +28,10 @@ const infoText = [
     `\/\/? version: "${JSON.parse(readFileSync(`${import.meta.dirname}/../package.json`).toString()).version}"`,
 ].join("\n");
 
-const replace = (module: node_modules, targetPath: string) => {
+export const patch = (
+    module: node_modules,
+    targetPath: string = paths.exec("node_modules/@minecraft/server-ui/index.d.ts"),
+) => {
     try {
         writeFileSync(
             targetPath,
@@ -41,9 +44,12 @@ const replace = (module: node_modules, targetPath: string) => {
     }
 };
 
-const tsmc = {
-    ["@minecraft/server-ui"]: (targetPath: string = paths.exec("node_modules/@minecraft/server-ui/index.d.ts")) =>
-        replace("@minecraft/server-ui", targetPath),
-} as const satisfies { [key in node_modules]?: (targetPath: string) => void };
+const tsmc = (targetPath?: string) => {
+    patch("@minecraft/server", targetPath);
+    patch("@minecraft/server-ui", targetPath);
+    patch("@minecraft/server-gametest", targetPath);
+    patch("@minecraft/server-net", targetPath);
+    patch("@minecraft/server-admin", targetPath);
+};
 
 export default tsmc;
