@@ -2,10 +2,11 @@
     "name": "typesafe-mc",
     "description": "Give better Types to your Minecraft Addon",
     "type": "module",
-    "version": "1.4.5",
+    "version": "1.5.0",
     "author": "iEnis",
     "bin": "scripts/index.js",
     "scripts": {
+        "test": "node scripts/index.js",
         "build": "tsc --project tsconfig.json",
         "watch": "tsc --project tsconfig.json --watch"
     },

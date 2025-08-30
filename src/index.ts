@@ -18,3 +18,5 @@ await Wrapper.spinner("Installing patched '@minecraft/server-ui' module", async 
     patch("@minecraft/server-ui");
     return true;
 });
+
+Wrapper.outro("Finished patching modules");

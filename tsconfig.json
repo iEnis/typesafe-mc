@@ -7,6 +7,7 @@
         "skipLibCheck": true,
         "allowJs": false,
         "rootDir": "./src",
+        "declaration": true,
         "outDir": "./scripts"
     }
 }

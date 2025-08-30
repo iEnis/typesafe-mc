@@ -35,7 +35,7 @@ export const patch = (
 ) => {
     try {
         writeFileSync(
-            path.join(targetPath, "node_modules", module, mapping[module]),
+            path.join(targetPath, "node_modules", module, "index.d.ts"),
             readFileSync(paths.node(`/types/${mapping[module]}`))
                 .toString()
                 .replace(`\/\/! {REPLACE_ME}`, infoText),

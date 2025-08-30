@@ -14,7 +14,7 @@ const infoText = [
 ].join("\n");
 export const patch = (module, targetPath = paths.exec()) => {
     try {
-        writeFileSync(path.join(targetPath, "node_modules", module, mapping[module]), readFileSync(paths.node(`/types/${mapping[module]}`))
+        writeFileSync(path.join(targetPath, "node_modules", module, "index.d.ts"), readFileSync(paths.node(`/types/${mapping[module]}`))
             .toString()
             .replace(`\/\/! {REPLACE_ME}`, infoText));
     }
