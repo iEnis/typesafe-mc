@@ -1,5 +1,6 @@
 import { readFileSync, writeFileSync } from "fs";
 import paths from "./paths.js";
+import path from "path";
 
 type node_modules =
     | "@minecraft/server"
@@ -30,11 +31,11 @@ const infoText = [
 
 export const patch = (
     module: node_modules,
-    targetPath: string = paths.exec("node_modules/@minecraft/server-ui/index.d.ts"),
+    targetPath: string = paths.exec(),
 ) => {
     try {
         writeFileSync(
-            targetPath,
+            path.join(targetPath, "node_modules", module, mapping[module]),
             readFileSync(paths.node(`/types/${mapping[module]}`))
                 .toString()
                 .replace(`\/\/! {REPLACE_ME}`, infoText),
