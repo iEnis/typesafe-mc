@@ -9,7 +9,6 @@
    Copyright (c) Microsoft Corporation.
    ***************************************************************************** */
 /**
- * @beta
  * @packageDocumentation
  * The `@minecraft/server-ui` module contains types for
  * expressing simple dialog-based user experiences.
@@ -28,7 +27,7 @@
  * ```json
  * {
  *   "module_name": "@minecraft/server-ui",
- *   "version": "2.0.0-beta"
+ *   "version": "2.0.0"
  * }
  * ```
  *
@@ -121,14 +120,12 @@ export class ActionFormData {
      */
     button(text: minecraftserver.RawMessage | string, iconPath?: string): ActionFormData;
     /**
-     * @beta
      * @remarks
      * Adds a section divider to the form.
      *
      */
     divider(): ActionFormData;
     /**
-     * @beta
      * @remarks
      * Adds a header to the form.
      *
@@ -137,7 +134,6 @@ export class ActionFormData {
      */
     header(text: minecraftserver.RawMessage | string): ActionFormData;
     /**
-     * @beta
      * @remarks
      * Adds a label to the form.
      *
@@ -156,6 +152,12 @@ export class ActionFormData {
      * @param player
      * Player to show this dialog to.
      * @throws This function can throw errors.
+     *
+     * {@link minecraftcommon.EngineError}
+     *
+     * {@link minecraftserver.InvalidEntityError}
+     *
+     * {@link minecraftserver.RawMessageError}
      */
     show(player: minecraftserver.Player): Promise<ActionFormResponse>;
     /**
@@ -362,6 +364,8 @@ export class MessageFormData {
      * {@link minecraftcommon.EngineError}
      *
      * {@link minecraftserver.InvalidEntityError}
+     *
+     * {@link minecraftserver.RawMessageError}
      */
     show(player: minecraftserver.Player): Promise<MessageFormResponse>;
     /**
@@ -492,7 +496,6 @@ export class MessageFormResponse extends FormResponse {
  */
 export class ModalFormData<T extends any[] = []> {
     /**
-     * @beta
      * @remarks
      * Adds a section divider to the form.
      *
@@ -502,14 +505,19 @@ export class ModalFormData<T extends any[] = []> {
      * @remarks
      * Adds a dropdown with choices to the form.
      *
+     * @param label
+     * The label to display for the dropdown.
+     * @param items
+     * The selectable items for the dropdown.
+     * @param dropdownOptions
+     * The optional additional values for the dropdown creation.
      */
     dropdown(
         label: minecraftserver.RawMessage | string,
-        options: (minecraftserver.RawMessage | string)[],
-        defaultValueIndex?: number,
+        items: (minecraftserver.RawMessage | string)[],
+        dropdownOptions?: ModalFormDataDropdownOptions,
     ): ModalFormData<[...T, number]>;
     /**
-     * @beta
      * @remarks
      * Adds a header to the form.
      *
@@ -518,7 +526,6 @@ export class ModalFormData<T extends any[] = []> {
      */
     header(text: minecraftserver.RawMessage | string): ModalFormData<T>;
     /**
-     * @beta
      * @remarks
      * Adds a label to the form.
      *
@@ -537,30 +544,49 @@ export class ModalFormData<T extends any[] = []> {
      * @param player
      * Player to show this dialog to.
      * @throws This function can throw errors.
+     *
+     * {@link minecraftcommon.EngineError}
+     *
+     * {@link minecraftserver.InvalidEntityError}
+     *
+     * {@link minecraftserver.RawMessageError}
      */
     show(player: minecraftserver.Player): Promise<ModalFormResponse<T>>;
     /**
      * @remarks
      * Adds a numeric slider to the form.
      *
+     * @param label
+     * The label to display for the slider.
+     * @param minimumValue
+     * The minimum selectable possible value.
+     * @param maximumValue
+     * The maximum selectable possible value.
+     * @param sliderOptions
+     * The optional additional values for the slider creation.
      */
     slider(
         label: minecraftserver.RawMessage | string,
         minimumValue: number,
         maximumValue: number,
-        valueStep: number,
-        defaultValue?: number,
+        sliderOptions?: ModalFormDataSliderOptions,
     ): ModalFormData<[...T, number]>;
     submitButton(submitButtonText: minecraftserver.RawMessage | string): ModalFormData<T>;
     /**
      * @remarks
      * Adds a textbox to the form.
      *
+     * @param label
+     * The label to display for the textfield.
+     * @param placeholderText
+     * The place holder text to display.
+     * @param textFieldOptions
+     * The optional additional values for the textfield creation.
      */
     textField(
         label: minecraftserver.RawMessage | string,
         placeholderText: minecraftserver.RawMessage | string,
-        defaultValue?: minecraftserver.RawMessage | string,
+        textFieldOptions?: ModalFormDataTextFieldOptions,
     ): ModalFormData<[...T, string]>;
     /**
      * @remarks
@@ -572,8 +598,12 @@ export class ModalFormData<T extends any[] = []> {
      * @remarks
      * Adds a toggle checkbox button to the form.
      *
+     * @param label
+     * The label to display for the toggle.
+     * @param toggleOptions
+     * The optional additional values for the toggle creation.
      */
-    toggle(label: minecraftserver.RawMessage | string, defaultValue?: boolean): ModalFormData<[...T, boolean]>;
+    toggle(label: minecraftserver.RawMessage | string, toggleOptions?: ModalFormDataToggleOptions): ModalFormData<[...T, boolean]>;
 }
 
 /**
@@ -633,6 +663,98 @@ export class UIManager {
      * @throws This function can throw errors.
      */
     closeAllForms(player: minecraftserver.Player): void;
+}
+
+/**
+ * An interface that is passed into {@link
+ * @minecraft/Server-ui.ModalFormData.dropdown} to provide
+ * additional options for the dropdown creation.
+ */
+export interface ModalFormDataDropdownOptions {
+    /**
+     * @remarks
+     * The default selected item index. It will be zero in case of
+     * not setting this value.
+     *
+     */
+    defaultValueIndex?: number;
+    /**
+     * @remarks
+     * It will show an exclamation icon that will display a tooltip
+     * if it is hovered.
+     *
+     */
+    tooltip?: minecraftserver.RawMessage | string;
+}
+
+/**
+ * An interface that is passed into {@link
+ * @minecraft/Server-ui.ModalFormData.slider} to provide
+ * additional options for the slider creation.
+ */
+export interface ModalFormDataSliderOptions {
+    /**
+     * @remarks
+     * The default value for the slider.
+     *
+     */
+    defaultValue?: number;
+    /**
+     * @remarks
+     * It will show an exclamation icon that will display a tooltip
+     * if it is hovered.
+     *
+     */
+    tooltip?: minecraftserver.RawMessage | string;
+    /**
+     * @remarks
+     * Defines the increment of values that the slider generates
+     * when moved. It will be '1' in case of not providing this.
+     *
+     */
+    valueStep?: number;
+}
+
+/**
+ * An interface that is passed into {@link
+ * @minecraft/Server-ui.ModalFormData.textField} to provide
+ * additional options for the textfield creation.
+ */
+export interface ModalFormDataTextFieldOptions {
+    /**
+     * @remarks
+     * The default value for the textfield.
+     *
+     */
+    defaultValue?: string;
+    /**
+     * @remarks
+     * It will show an exclamation icon that will display a tooltip
+     * if it is hovered.
+     *
+     */
+    tooltip?: minecraftserver.RawMessage | string;
+}
+
+/**
+ * An interface that is passed into {@link
+ * @minecraft/Server-ui.ModalFormData.toggle} to provide
+ * additional options for the toggle creation.
+ */
+export interface ModalFormDataToggleOptions {
+    /**
+     * @remarks
+     * The default value for the toggle.
+     *
+     */
+    defaultValue?: boolean;
+    /**
+     * @remarks
+     * It will show an exclamation icon that will display a tooltip
+     * if it is hovered.
+     *
+     */
+    tooltip?: minecraftserver.RawMessage | string;
 }
 
 // @ts-ignore Class inheritance allowed for native defined classes
